@@ -21,12 +21,26 @@ const updateHotel = async (req, res) => {
       distance,
       photos,
       description,
+      rating,
+      rooms,
       cheapestPrice,
       featured,
     },
   } = req;
 
-  const hotel = await Hotel.findByIdAndUpdate({ _id: hotelId }, body, {
+  if (
+    name === '' ||
+    type === '' ||
+    city === '' ||
+    address === '' ||
+    distance === '' ||
+    description === '' ||
+    cheapestPrice === ''
+  ) {
+    throw new BadRequest('Fields cannot be empty');
+  }
+
+  const hotel = await Hotel.findByIdAndUpdate({ _id: hotelId }, req.body, {
     new: true,
     runValidators: true,
   });
