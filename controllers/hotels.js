@@ -40,7 +40,7 @@ const updateHotel = async (req, res) => {
     throw new BadRequest('Fields cannot be empty');
   }
 
-  const hotel = await Hotel.findByIdAndUpdate({ _id: hotelId }, body, {
+  const hotel = await Hotel.findByIdAndUpdate({ _id: hotelId }, req.body, {
     new: true,
     runValidators: true,
   });
