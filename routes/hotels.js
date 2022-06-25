@@ -7,7 +7,7 @@ const {
 } = require('../controllers/hotels');
 const router = express.Router();
 
-router.route('/').get(getAllHotels);
-router.route('/:id').get(createHotel).patch(updateHotel).delete(deleteHotel);
+router.route('/').get(getAllHotels).post(createHotel);
+router.route('/:id').patch(updateHotel).delete(deleteHotel);
 
 module.exports = router;
