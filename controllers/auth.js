@@ -1,8 +1,27 @@
-const loginUser = async (req, res) => {
-  res.json('User logged In');
-};
+const User = require('../models/User');
+const { StatusCodes } = require('http-status-codes');
+const { BadRequest, UnauthenticatedError } = require('../errors');
+
 const registerUser = async (req, res) => {
-  res.send('Register user in');
+  const user = await User.create({ ...req.body });
+  const token = user.createJWT();
+  res
+    .status(StatusCodes.CREATED)
+    .json({ user: { username: user.username }, token });
 };
 
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (email === '' || password === '') {
+    throw new BadRequest('Please provide email and password');
+  }
+  const user = await User.findOne({ email: email });
+
+  if (!user) {
+    throw new UnauthenticatedError('Invalid credentials');
+  }
+
+  res.json('Logged In User');
+};
 module.exports = { loginUser, registerUser };
