@@ -7,6 +7,10 @@ const getAllHotels = async (req, res) => {
   res.status(StatusCodes.OK).json({ nbHits: hotels.length, hotels });
 };
 const createHotel = async (req, res) => {
+  const {
+    user: { userId },
+  } = req;
+  req.body.createdBy = userId;
   const hotel = await Hotel.create(req.body);
   res.status(StatusCodes.CREATED).json({ hotel });
 };

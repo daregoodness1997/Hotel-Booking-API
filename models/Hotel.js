@@ -49,7 +49,7 @@ const HotelSchema = new mongoose.Schema(
     createdBy: {
       type: mongoose.Types.ObjectId,
       ref: 'User',
-      // required: [true, 'Please provide a user'],
+      required: [true, 'Please provide a user'],
     },
   },
   { timestamps: true }
