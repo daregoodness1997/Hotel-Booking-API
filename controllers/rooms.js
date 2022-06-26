@@ -66,6 +66,9 @@ const deleteRoom = async (req, res) => {
     params: { id: roomId, hotel: hotelId },
   } = req;
 
+
+  // const hotel = await Hotel.find({ _id: hotelId });
+
   const room = await Room.findByIdAndDelete({ _id: roomId, createdBy: userId });
 
   if (!room) {
