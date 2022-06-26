@@ -22,6 +22,16 @@ const loginUser = async (req, res) => {
     throw new UnauthenticatedError('Invalid credentials');
   }
 
-  res.json('Logged In User');
+  // compare password and password
+  const isPasswordCorrect = await user.checkPassword(password);
+  if (!isPasswordCorrect) {
+    throw new UnauthenticatedError('Invalid credentials');
+  }
+
+  const token = user.createJWT();
+  res
+    .cookie('access_token', token, { httpOnly: true })
+    .status(StatusCodes.OK)
+    .json({ user: { username: user.username, isAdmin: user.isAdmin }, token });
 };
 module.exports = { loginUser, registerUser };

@@ -5,6 +5,7 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const connectDB = require('./db/connect-db');
+const cookieParser = require('cookie-parser');
 
 // error handler
 const notFoundMiddleware = require('./middleware/not-found');
@@ -18,6 +19,7 @@ const hotelRouter = require('./routes/hotels');
 const roomRouter = require('./routes/rooms');
 const userRouter = require('./routes/users');
 
+app.use(cookieParser());
 app.use(express.json());
 
 app.use('/api/v1/auth', authRouter);

@@ -3,7 +3,19 @@ const { StatusCodes } = require('http-status-codes');
 const { BadRequest, NotFoundError } = require('../errors');
 
 const getAllHotels = async (req, res) => {
-  const hotels = await Hotel.find();
+  const {
+    user: { isAdmin },
+  } = req;
+
+  // if (isAdmin) {
+  //   const hotels = await Hotel.find({});
+  //   res.status(StatusCodes.OK).json({ nbHits: hotels.length, hotels });
+  // }
+
+  const hotels = await Hotel.find({
+    createdBy: req.user.userId,
+  });
+
   res.status(StatusCodes.OK).json({ nbHits: hotels.length, hotels });
 };
 const createHotel = async (req, res) => {
@@ -11,12 +23,15 @@ const createHotel = async (req, res) => {
     user: { userId },
   } = req;
   req.body.createdBy = userId;
+  req.body.updatedBy = userId;
   const hotel = await Hotel.create(req.body);
+
   res.status(StatusCodes.CREATED).json({ hotel });
 };
 const updateHotel = async (req, res) => {
   const {
     params: { id: hotelId },
+    user: { userId, isAdmin },
     body: { name, type, city, address, distance, description, cheapestPrice },
   } = req;
 
@@ -32,10 +47,14 @@ const updateHotel = async (req, res) => {
     throw new BadRequest('Fields cannot be empty');
   }
 
-  const hotel = await Hotel.findByIdAndUpdate({ _id: hotelId }, req.body, {
-    new: true,
-    runValidators: true,
-  });
+  const hotel = await Hotel.findByIdAndUpdate(
+    { _id: hotelId, createdBy: userId },
+    req.body,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
   if (!hotel) {
     throw new NotFoundError(`No hotel with id ${hotelId}`);
   }
@@ -43,10 +62,14 @@ const updateHotel = async (req, res) => {
 };
 const deleteHotel = async (req, res) => {
   const {
+    user: { userId },
     params: { id: hotelId },
   } = req;
 
-  const hotel = await Hotel.findOneAndDelete({ _id: hotelId });
+  const hotel = await Hotel.findOneAndDelete({
+    _id: hotelId,
+    createdBy: userId,
+  });
 
   if (!hotel) {
     throw new NotFoundError(`No hotel with id ${hotelId}`);
@@ -54,4 +77,9 @@ const deleteHotel = async (req, res) => {
   res.status(StatusCodes.OK).json({ msg: 'Hotel deleted' });
 };
 
-module.exports = { getAllHotels, createHotel, updateHotel, deleteHotel };
+module.exports = {
+  getAllHotels,
+  createHotel,
+  updateHotel,
+  deleteHotel,
+};
