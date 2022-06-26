@@ -18,8 +18,6 @@ const authentication = async (req, res, next) => {
       username: payload.username,
       isAdmin: payload.isAdmin,
     };
-
-    console.log('access_token', token);
   } catch (err) {
     throw new UnauthenticatedError('Authentication invalid');
   }

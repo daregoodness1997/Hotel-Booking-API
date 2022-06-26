@@ -26,12 +26,13 @@ const createRoom = async (req, res) => {
       runValidators: true,
     }
   );
-  res.status(200).json({ room, hotel });
+  res.status(StatusCodes.CREATED).json({ room, hotel });
 };
 const updateRoom = async (req, res) => {
   const {
     user: { userId },
     body: { title, price, maxPeople, description, hotel },
+    params: { id: roomId },
   } = req;
 
   if (
@@ -44,16 +45,50 @@ const updateRoom = async (req, res) => {
     throw new BadRequest('Fields cannot be empty');
   }
 
-  const room = await Room.findByIdAndUpdate({ _id: roomId, createdBy: userId });
-  res.status(200).json('Update a Room');
-};
-const updateRoomAvailability = async (req, res) => {
-  res.status(200).json('Update a Room');
-};
-const deleteRoom = async (req, res) => {
-  res.status(200).json('Delete a Room');
+  const room = await Room.findByIdAndUpdate(
+    { _id: roomId, createdBy: userId },
+    req.body,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  if (!room) {
+    throw new NotFoundError(`No room with id ${roomId}`);
+  }
+  res.status(StatusCodes.OK).json({ msg: 'Room information updated', room });
 };
 
+const deleteRoom = async (req, res) => {
+  const {
+    user: { userId },
+    params: { id: roomId, hotel: hotelId },
+  } = req;
+
+  const room = await Room.findByIdAndDelete({ _id: roomId, createdBy: userId });
+
+  if (!room) {
+    throw new NotFoundError(`No room with id ${roomId}`);
+  }
+
+  const hotel = await Hotel.findByIdAndUpdate(
+    hotelId,
+    {
+      $pull: { rooms: roomId },
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  res.status(StatusCodes.OK).json({ msg: 'Room deleted', hotel });
+};
+
+const updateRoomAvailability = async (req, res) => {
+  res.status(200).json('Change room availabilty');
+};
 module.exports = {
   getAllRooms,
   createRoom,
