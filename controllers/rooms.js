@@ -8,6 +8,14 @@ const getAllRooms = async (req, res) => {
 
   res.status(StatusCodes.OK).json({ nbHits: rooms.length, rooms });
 };
+
+const getRoom = async (req, res) => {
+  const {
+    params: { id: roomId },
+  } = req;
+  const room = await Room.find({ _id: roomId });
+  res.status(StatusCodes.OK).json({ nbHits: room.length, room });
+};
 const createRoom = async (req, res) => {
   const {
     params: { id: hotelId },
@@ -66,7 +74,6 @@ const deleteRoom = async (req, res) => {
     params: { id: roomId, hotel: hotelId },
   } = req;
 
-
   // const hotel = await Hotel.find({ _id: hotelId });
 
   const room = await Room.findByIdAndDelete({ _id: roomId, createdBy: userId });
@@ -94,6 +101,7 @@ const updateRoomAvailability = async (req, res) => {
 };
 module.exports = {
   getAllRooms,
+  getRoom,
   createRoom,
   updateRoom,
   deleteRoom,
