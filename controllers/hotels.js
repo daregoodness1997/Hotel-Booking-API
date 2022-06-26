@@ -4,7 +4,7 @@ const { BadRequest, NotFoundError } = require('../errors');
 
 const getAllHotels = async (req, res) => {
   const hotels = await Hotel.find();
-  res.status(StatusCodes.OK).json(hotels);
+  res.status(StatusCodes.OK).json({ nbHits: hotels.length, hotels });
 };
 const createHotel = async (req, res) => {
   const hotel = await Hotel.create(req.body);
@@ -13,19 +13,7 @@ const createHotel = async (req, res) => {
 const updateHotel = async (req, res) => {
   const {
     params: { id: hotelId },
-    body: {
-      name,
-      type,
-      city,
-      address,
-      distance,
-      photos,
-      description,
-      rating,
-      rooms,
-      cheapestPrice,
-      featured,
-    },
+    body: { name, type, city, address, distance, description, cheapestPrice },
   } = req;
 
   if (

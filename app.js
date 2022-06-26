@@ -10,6 +10,9 @@ const connectDB = require('./db/connect-db');
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
 
+// auth middleware
+const authMiddleware = require('./middleware/auth');
+
 const authRouter = require('./routes/auth');
 const hotelRouter = require('./routes/hotels');
 const roomRouter = require('./routes/rooms');
@@ -18,9 +21,9 @@ const userRouter = require('./routes/users');
 app.use(express.json());
 
 app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/hotels', hotelRouter);
-app.use('/api/v1/rooms', roomRouter);
-app.use('/api/v1/users', userRouter);
+app.use('/api/v1/hotels', authMiddleware, hotelRouter);
+app.use('/api/v1/rooms', authMiddleware, roomRouter);
+app.use('/api/v1/users', authMiddleware, userRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
