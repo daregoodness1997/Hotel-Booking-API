@@ -51,6 +51,11 @@ const HotelSchema = new mongoose.Schema(
       ref: 'User',
       required: [true, 'Please provide a user'],
     },
+    updatedBy: {
+      type: mongoose.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'Please provide a user'],
+    },
   },
   { timestamps: true }
 );

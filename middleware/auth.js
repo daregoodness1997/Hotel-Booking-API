@@ -8,14 +8,18 @@ const authentication = async (req, res, next) => {
     throw new UnauthenticatedError('Authentication invalid');
   }
 
-  const token = authHeader.split(' ')[1];
+  const token = authHeader.split(' ')[1] || req.cookies.access_token;
 
   try {
     const payload = jwt.verify(token, 'jwtSecret');
+    // attach the user payload to the hotels, room and users route routes
+    req.user = {
+      userId: payload.userId,
+      username: payload.username,
+      isAdmin: payload.isAdmin,
+    };
 
-    // attack the user to the hotels, room and users route routes
-
-    req.user = { userId: payload.userId, username: payload.username };
+    console.log('access_token', token);
   } catch (err) {
     throw new UnauthenticatedError('Authentication invalid');
   }
