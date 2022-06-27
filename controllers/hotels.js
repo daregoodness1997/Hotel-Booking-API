@@ -5,12 +5,49 @@ const { BadRequest, NotFoundError } = require('../errors');
 const getAllHotels = async (req, res) => {
   const {
     user: { isAdmin },
+    query: {
+      name,
+      type,
+      city,
+      rating,
+      rooms,
+      cheapestPrice,
+      featured,
+      numericFilters,
+      sort,
+      fields,
+    },
   } = req;
 
   // if (isAdmin) {
   //   const hotels = await Hotel.find({});
   //   res.status(StatusCodes.OK).json({ nbHits: hotels.length, hotels });
   // }
+
+  const queryObject = {};
+
+  if (name) {
+    queryObject.name = {
+      $regex: name,
+      $options: 'i',
+    };
+  }
+
+  if (city) {
+    queryObject.city = {
+      $regex: city,
+      $options: 'i',
+    };
+  }
+
+  if (rooms) {
+    queryObject.rooms = rooms;
+  }
+
+  // filer by
+
+  if (numericFilters) {
+  }
 
   const hotels = await Hotel.find({
     createdBy: req.user.userId,
@@ -77,9 +114,43 @@ const deleteHotel = async (req, res) => {
   res.status(StatusCodes.OK).json({ msg: 'Hotel deleted' });
 };
 
+const countByCity = async (req, res) => {
+  const {
+    query: { cities },
+  } = req;
+  const result = cities.split(',');
+
+  const list = await Promise.all(
+    result.map(city => {
+      // return Hotel.find({ city: city }).length;
+      return Hotel.countDocuments({ city: city });
+    })
+  );
+
+  res.status(StatusCodes.OK).json(list);
+};
+
+const countByType = async (req, res) => {
+  const {
+    query: { type },
+  } = req;
+  const result = type.split(',');
+
+  const list = await Promise.all(
+    result.map(city => {
+      // return Hotel.find({ type: type }).length;
+      return Hotel.countDocuments({ type: type });
+    })
+  );
+
+  res.status(StatusCodes.OK).json(list);
+};
+
 module.exports = {
   getAllHotels,
   createHotel,
   updateHotel,
   deleteHotel,
+  countByCity,
+  countByType,
 };
