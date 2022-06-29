@@ -49,9 +49,10 @@ const getAllHotels = async (req, res) => {
   if (numericFilters) {
   }
 
-  const hotels = await Hotel.find({
-    createdBy: req.user.userId,
-  });
+  // const hotels = await Hotel.find({
+  //   createdBy: req.user.userId,
+  // });
+  const hotels = await Hotel.find(req.query);
 
   res.status(StatusCodes.OK).json({ nbHits: hotels.length, hotels });
 };

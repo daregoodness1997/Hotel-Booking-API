@@ -161,7 +161,23 @@ const deleteRoom = async (req, res) => {
 };
 
 const updateRoomAvailability = async (req, res) => {
-  res.status(200).json('Change room availabilty');
+  const {
+    user: { userId },
+    params: { id: roomId },
+  } = req;
+
+  const room = await Room.updateOne(
+    { 'roomNumbers._id': roomId },
+    {
+      $push: { 'roomNumbers.$.unavailabeDates': req.body.dates },
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  res.status(200).json(room);
 };
 module.exports = {
   getAllRooms,
