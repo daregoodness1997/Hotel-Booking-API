@@ -6,6 +6,8 @@ const express = require('express');
 const app = express();
 const connectDB = require('./db/connect-db');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
+const helmet = require('helmet');
 
 // error handler
 const notFoundMiddleware = require('./middleware/not-found');
@@ -21,6 +23,8 @@ const userRouter = require('./routes/users');
 
 app.use(cookieParser());
 app.use(express.json());
+app.use(helmet());
+app.use(cors());
 
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/hotels', authMiddleware, hotelRouter);
