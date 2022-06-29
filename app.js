@@ -26,6 +26,9 @@ app.use(express.json());
 app.use(helmet());
 app.use(cors());
 
+app.get('/', (req, res) => {
+  res.send('Rental Booking API');
+});
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/hotels', authMiddleware, hotelRouter);
 app.use('/api/v1/rooms', authMiddleware, roomRouter);
