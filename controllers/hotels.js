@@ -127,7 +127,7 @@ const countByCity = async (req, res) => {
     })
   );
 
-  res.status(StatusCodes.OK).json(list);
+  res.status(StatusCodes.OK).json({ list: list });
 };
 
 const countByType = async (req, res) => {
@@ -143,7 +143,7 @@ const countByType = async (req, res) => {
     })
   );
 
-  res.status(StatusCodes.OK).json(list);
+  res.status(StatusCodes.OK).json({ list: list });
 };
 
 module.exports = {
