@@ -19,6 +19,13 @@ const HotelSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Enter an address'],
     },
+    phone: {
+      type: String,
+    },
+    email: {
+      type: String,
+    },
+
     distance: {
       type: String,
       required: [true, 'Enter a distance'],
